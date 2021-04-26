@@ -69,7 +69,7 @@ function EnhancedTableHead(props) {
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
+                        inputProps={{ 'aria-label': 'select all trips' }}
                     />
                 </TableCell>
                 {headCells.map((headCell) => (
@@ -179,7 +179,8 @@ const useStyles = makeStyles((theme) => ({
     },
     table: {
         minWidth: 750,
-        backgroundColor: '#ECE3D4'
+        // backgroundColor: '#ECE3D4',  ///color for table in dashboard
+        type: "dark"
     },
     visuallyHidden: {
         border: 0,

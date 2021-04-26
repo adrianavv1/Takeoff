@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import waves from '../images/waves.png';
 //Material UI
 import {
   Avatar,
@@ -103,7 +104,7 @@ class Login extends Component {
             <Avatar
               className={classes.avatar}
               alt="waves"
-              src="/client/public/images/waves.png"
+              src={waves}
             />
 
             <Typography component="h1" variant="h5" style={{color: '#113034', fontFamily:"aw-conqueror-didot", fontWeight: "900", fontStyle: 'normal'}}>
@@ -155,6 +156,18 @@ class Login extends Component {
                   </p>
                 </Grid>
               </Grid>
+              <Grid container mt={5}>
+                <Grid item xs={12} >
+                  <br />
+                  <br />
+                  <br />
+                <Typography variant="h6" style={{color: "#113034", fontFamily:"aw-conqueror-didot", fontWeight: "900", fontStyle: "normal", textAlign:"center"}} >
+                    Plan your trips and save your memories with 
+                  </Typography>
+                  <Typography variant="h6" style={{color: "#113034", fontFamily:"aw-conqueror-didot", fontWeight: "900", fontStyle: "normal", textAlign:"center"}} >TAKE OFF </Typography>
+                </Grid>
+              </Grid>
+                       
               <Box mt={5}>
                 <Copyright />
               </Box>

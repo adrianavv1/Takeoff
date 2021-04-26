@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { getBucketItems, createBucketItem, deleteBucketItem } from '../actions/bucketActions';
 // Material UI
 import {
+  Avatar,
+  Box,
   Button,
   Checkbox,
   Container,
-  FormControl,
   IconButton,
   InputLabel,
   List,
@@ -13,10 +16,10 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   OutlinedInput,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,11 +30,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 export default function CheckboxListSecondary() {
+  const dispatch = useDispatch();
+  const userId = useSelector(state => state.auth.user.id);
+  useEffect(() => {
+    dispatch(getBucketItems(userId));
+  }, []);
+  const bucketList = useSelector(state => state.bucket.bucketListItems);
+
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([1]);
+  const [checked, setChecked] = useState([1]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -45,50 +53,79 @@ export default function CheckboxListSecondary() {
 
     setChecked(newChecked);
   };
-  const [name, setName] = React.useState("");
+  const [name, setName] = useState("");
 
   const handleChange = (event) => {
     setName(event.target.value);
   };
 
+  const handleDelete = (id) => {
+    dispatch(deleteBucketItem(id));
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const newItem = { description: name, userId };
+    dispatch(createBucketItem(newItem));
+    setName('');
+  }
+
   return (
     <Container fixed align="center">
-      <h1>My Bucket List</h1>
+      <Typography
+        className={classes.heading}
+        variant="h2"
+        align="center"
+        style={{
+          marginTop: "50px",
+          textDecoration: "none",
+          color: "#113034",
+          fontFamily: "aw-conqueror-didot",
+          fontWeight: "900",
+          fontSize: "5rem",
+          fontStyle: "normal",
+        }}
+      >
+        {" "}
+        My Bucket List{" "}
+      </Typography>
+
       <List dense className={classes.root}>
-        {[0, 1, 2, 3].map((value) => {
-          const labelId = `checkbox-list-secondary-label-${value}`;
+        {bucketList.map((item) => {
+          const labelId = `checkbox-list-secondary-label-${item._id}`;
           return (
-            <ListItem key={value} button>
-              <ListItemAvatar>
-                <IconButton edge="end" aria-label="delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemAvatar>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-              <ListItemSecondaryAction>
-                <Checkbox
-                  edge="end"
-                  onChange={handleToggle(value)}
-                  checked={checked.indexOf(value) !== -1}
-                  inputProps={{ "aria-labelledby": labelId }}
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
+            <Box>
+              <ListItem key={item._id} button>
+                <ListItemAvatar>
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemAvatar>
+                <ListItemText id={labelId} primary={`${item.description}`} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    edge="end"
+                    onChange={handleToggle(item._id)}
+                    checked={checked.indexOf(item._id) !== -1}
+                    inputProps={{ "aria-labelledby": labelId }}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Box>
           );
         })}
       </List>
-      <FormControl variant="outlined" margin="dense">
+      <form onSubmit={onSubmit}>
         <InputLabel htmlFor="component-outlined"></InputLabel>
         <OutlinedInput
           id="component-outlined"
           value={name}
           onChange={handleChange}
-          label="Name"
         />
-        <Button variant="contained" color="primary" >
+        <Button variant="contained" color="primary" onClick={onSubmit}>
           Add New Destination
         </Button>
-      </FormControl>
+      </form>
     </Container>
   );
 }
